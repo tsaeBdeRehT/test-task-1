@@ -14,20 +14,33 @@ const formatTime = (seconds) => {
 // который будет анимировать timerEl
 const createTimerAnimator = () => {
   let timer;
+  let time = 0;
+  let diff = 0;
   return (seconds) => {
     clearInterval(timer);
     let start = Date.now();
-    let time = 0;
-    let diff = 0;
-    timerEl.innerText = formatTime(seconds--);
+    console.log(start);
+    let secondsRest = seconds;
+    timerEl.innerText = formatTime(seconds);
+    diff = (Date.now() - start) - time;
+    timerIteration(diff);
+    function timerIteration (diff) {
+      timer = setTimeout(() => {
+        timerEl.innerText = formatTime(--secondsRest);
+        time += 1000;
+        diff = (Date.now() - start) - time;
+        if (time >= seconds*1000) {
+          clearTimeout(timer);
+          console.log(Date.now());
+        }
+        else
+         timerIteration(diff);
+      }, 1000-diff)
 
-    timer = setInterval(() => {
-      timerEl.innerText = formatTime(seconds--);
-      time += 1000;
-      diff = (Date.now() - start) - time;
-    }, 1000 - diff);
-    setInterval(() => clearInterval(timer), (seconds+1)*1000);
+    }
   };
+
+
 };
 
 const animateTimer = createTimerAnimator();
